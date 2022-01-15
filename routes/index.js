@@ -1,4 +1,4 @@
-const { getReversibleNumbers } = require('../controllers')
+const { getReversibleNumbers } = require("../controllers");
 
 module.exports = function (app) {
   app.get("/api", getReversibleNumbers);
