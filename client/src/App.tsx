@@ -47,11 +47,8 @@ const App: FC = (): ReactElement => {
       {parseInt(number) ? (
         <h3>
           The list of{" "}
-          <ReversbleCountspan style={{ color: "green" }}>
-            {reversibleNumbers.length}
-          </ReversbleCountspan>{" "}
-          reversible numbers up to{" "}
-          <NumberSpan style={{ color: "red" }}>{number} </NumberSpan>
+          <ReversbleCountspan>{reversibleNumbers.length}</ReversbleCountspan>{" "}
+          reversible numbers up to <NumberSpan>{number}</NumberSpan>
         </h3>
       ) : null}
       <hr />
