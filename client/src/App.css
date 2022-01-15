@@ -4,3 +4,16 @@
 .input_form{
 margin-bottom: 3rem;
 }
+.form{
+padding-bottom: 1rem;
+}
+.form input{
+  width: 20%;
+  height: 2rem;
+}
+.nembers_container, .empity_container{
+  display: flex;
+
+  justify-content: space-around;
+  flex-direction: row;
+}

@@ -10,8 +10,6 @@ const reversibleNumbers = number => {
     let numbers = [];
     for (let i = 1; i <= number; i++)
         if (isReversible(i)) numbers.push(i)
-
-    console.log(numbers.length)
     return numbers;
 }
 
