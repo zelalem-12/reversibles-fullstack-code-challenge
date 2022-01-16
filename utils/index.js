@@ -12,8 +12,13 @@ const isReversible = (num) => {
 
 const reversibleNumbers = (number) => {
   let numbers = [];
-  for (let i = 1; i <= number; i++) if (isReversible(i)) numbers.push(i);
-  return numbers;
+  let count = 0;
+  for (let i = 1; i <= number; i++)
+    if (isReversible(i)) {
+      numbers.push(i);
+      count++;
+    }
+  return { count, numbers };
 };
 
 module.exports = {
