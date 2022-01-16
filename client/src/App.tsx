@@ -1,82 +1,76 @@
-import { FC, ReactElement, useState, useEffect, ChangeEvent } from "react";
+import { FC, ReactElement, useState, ChangeEvent, KeyboardEvent } from "react";
 import styled from "styled-components";
 import FormContainer from "./components/FormContainer";
 import NumbersList from "./components/NumbersList";
+import { ResponseType } from "./types";
 import "./App.css";
 
-const ReversbleCountspan = styled.span`
-  color: green;
+const Placeholder = styled.h2`
+  width: 50%;
+  margin: 5rem auto;
 `;
-const NumberSpan = styled.span`
+const Hr = styled.hr`
+  width: 100%;
+  heigh: 1rem;
   color: red;
+`;
+const Span = styled.span`
+  font-size: 24;
 `;
 
 const App: FC = (): ReactElement => {
   const [number, setNumber] = useState<string>("");
-  const [reversibleNumbers, setReversibleNumbers] = useState<Array<number>>([]);
+  const [response, setResponse] = useState<ResponseType>();
   const [loading, setLoading] = useState(false);
 
   const fetchReversibleNumbers = async (num: number): Promise<void> => {
     setLoading(true);
-    const response: Response = await fetch(
-      `http://localhost:5000/api?number=${num}`
-    );
-    const numbers = await response.json();
-    setLoading(false);
-
-    setReversibleNumbers(numbers);
+    try {
+      const response: Response = await fetch(
+        `http://localhost:5000/api?number=${num}`
+      );
+      const result = await response.json();
+      setLoading(false);
+      setResponse(result);
+    } catch (err) {
+      setLoading(false);
+      alert("Ops something gone wrong while fetching response");
+    }
   };
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
     setNumber(event.target.value);
   };
-  useEffect(() => {
-    if (number && parseInt(number)) {
-      fetchReversibleNumbers(parseInt(number));
-    }
-  }, []);
-  useEffect(() => {
-    if (number && parseInt(number)) {
-      fetchReversibleNumbers(parseInt(number));
-    }
-  }, [number]);
+  const calculateReversiblesOnSearch = (): void => {
+    if (!number || !parseInt(number)) alert("Please Enter valid number!");
+    else fetchReversibleNumbers(parseInt(number));
+  };
 
+  const onKeyEnterSendMessage = (
+    event: KeyboardEvent<HTMLInputElement>
+  ): void => {
+    if (event.code === "Enter") calculateReversiblesOnSearch();
+  };
   return (
     <div className="App">
-      <FormContainer value={number} handleChange={handleChange} />
-      {parseInt(number) ? (
-        <h3>
-          The list of{" "}
-          <ReversbleCountspan>{reversibleNumbers.length}</ReversbleCountspan>{" "}
-          reversible numbers up to <NumberSpan>{number}</NumberSpan>
-        </h3>
-      ) : null}
-      <hr />
+      <FormContainer
+        value={number}
+        handleChange={handleChange}
+        onKeyDown={onKeyEnterSendMessage}
+        onClick={calculateReversiblesOnSearch}
+      />
+      <Hr />
       {!loading ? (
-        parseInt(number) ? (
-          reversibleNumbers.length ? (
-            <div className="nembers_container">
-              <NumbersList numbers={reversibleNumbers} />
-            </div>
-          ) : (
-            <div className="empity_container">
-              {" "}
-              <h3> Not found</h3>
-            </div>
-          )
+        response ? (
+          <NumbersList count={response.count} numbers={response.numbers} />
         ) : (
-          <div className="empity_container">
-            {" "}
-            <h2>
-              Please Enter any positive integer to see reversible numbers up to
-              it
-            </h2>
-          </div>
+          <Placeholder>
+            Type any positive integer and press enter or click calculate button
+          </Placeholder>
         )
       ) : (
-        <div className="empity_container">
-          {" "}
-          <h3> ...Loading</h3>
+        <div className="loader">
+          <Span>Loading...</Span>
         </div>
       )}
     </div>
